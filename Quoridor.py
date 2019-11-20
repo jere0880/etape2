@@ -8,22 +8,35 @@ class QuoridorError(Exception):
 
 class Quoridor:
     def __init__(self, joueurs, murs=None):
-        if iter(joueurs) is False:
+        try:
+            j = iter(joueurs)
+        except TypeError as te:
             raise QuoridorError("joueurs n'est pas itérable")
         if len(joueurs) != 2:
             raise QuoridorError("L'itérable joueurs ne contient pas deux éléments")
+        if isinstance(murs, dict) is False and murs != None:
+            raise QuoridorError("murs ce doit d'être un dictionnaire")
         if isinstance(joueurs[0], str):
             joueur1 = {'nom': joueurs[0], 'murs': 10, 'pos': (5,1)}
         if isinstance(joueurs[1], str):
-            joueur2 = {'nom': joueurs[1], 'murs': 10, 'pos': (5,9)}
+            joueur2 = {'nom': joueurs[1], 'murs': 10, 'pos': (5,9)} 
         if isinstance(joueurs[0], dict):
             joueur1 = joueurs[0]
         if isinstance(joueurs[1], dict):
             joueur2 = joueurs[1]
+        if joueur1['murs'] > 10 or joueur2['murs'] > 10 or joueur1['murs'] < 0 or joueur2['murs'] < 0:
+            raise QuoridorError('Nombre de murs invalides')
+        if joueur1['pos'][0] > 9 or joueur2['pos'][0] > 9 or joueur1['pos'][1] > 9 or joueur2['pos'][1] > 9:
+            raise QuoridorError('Position invalide pour un joueur')
+        if joueur1['pos'][0] < 0 or joueur2['pos'][0] < 0 or joueur1['pos'][1] < 0  or joueur2['pos'][1] < 0:
+            raise QuoridorError('Position invalide pour un joueur')
         if murs == None:
             jeu = {'joueurs': [joueur1, joueur2], 'murs': {'horizontaux':[], 'verticaux': []}}
         if murs != None:
             jeu = {'joueurs': [joueur1, joueur2], 'murs': murs}
+            nmurs = len(murs['horizontaux']) + len(murs['verticaux']) + joueur1['murs'] + joueur2['murs']
+            if nmurs != 20:
+                raise QuoridorError('Nombre de murs invalide')
         self.jeu = jeu
     
     def __str__(self):
@@ -91,4 +104,5 @@ test = Quoridor(({"nom": "idul", "murs": 7, "pos": [5, 6]},
         "horizontaux": [[4, 4], [2, 6], [3, 8], [5, 8], [7, 8]],
         "verticaux": [[6, 2], [4, 4], [2, 5], [7, 5], [7, 7]]
     })
+
 print(test)
