@@ -10,7 +10,6 @@ class QuoridorError(Exception):
 
 
 class Quoridor:
-    #Initialisation de la classe
     def __init__(self, joueurs, murs=None):
         try:
             j = iter(joueurs)
