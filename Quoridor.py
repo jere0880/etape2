@@ -8,6 +8,7 @@ class QuoridorError(Exception):
 
 class Quoridor:
     def __init__(self, joueurs, murs=None):
+        #Initialisateur de la classe
         try:
             j = iter(joueurs)
         except TypeError as te:
