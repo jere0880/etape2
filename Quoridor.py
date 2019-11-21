@@ -26,32 +26,32 @@ class Quoridor:
         joueur = []
         for jou in joueurs:
             if isinstance(jou, str):
-                joueur.append({'nom': joueur, 'murs': 10, 'pos': (5,1)})
+                joueur.append({'nom': jou, 'murs': 10, 'pos': (5,1)})
             if isinstance(jou, dict):
                 joueur.append(jou)
-        #Vérification du nombre de murs
-        if joueurs[0]['murs'] > 10 or joueurs[1]['murs'] > 10 or joueurs[0]['murs'] < 0 or joueurs[1]['murs'] < 0:
-            raise QuoridorError('Nombre de murs invalides')
-        
+
         #Création de l'état de jeu et des dictionnaires murs
         if murs == None:
-            jeu = {'joueurs': [joueurs[0], joueurs[1]], 'murs': {'horizontaux':[], 'verticaux': []}}
+            jeu = {'joueurs': [joueur[0], joueur[1]], 'murs': {'horizontaux':[], 'verticaux': []}}
             murs = {'murs': {'horizontaux':[], 'verticaux': []}}
         else:
-            jeu = {'joueurs': [joueurs[0], joueurs[1]], 'murs': murs}
-            nmurs = len(murs['horizontaux']) + len(murs['verticaux']) + joueurs[0]['murs'] + joueurs[1]['murs']
+            jeu = {'joueurs': [joueur[0], joueur[1]], 'murs': murs}
+            nmurs = len(murs['horizontaux']) + len(murs['verticaux']) + joueur[0]['murs'] + joueur[1]['murs']
+            #Vérification du nombre de murs
             if nmurs != 20:
                 raise QuoridorError('Nombre de murs invalide')
+            #Vérification du nombre de murs
+            if joueur[0]['murs'] > 10 or joueur[1]['murs'] > 10 or joueur[0]['murs'] < 0 or joueur[1]['murs'] < 0:
+                raise QuoridorError('Nombre de murs invalides')
         
         #Vérification de la position des joueurs
-        if joueurs[0]['pos'][0] > 9 or joueurs[1]['pos'][0] > 9 or joueurs[0]['pos'][1] > 9 or joueurs[1]['pos'][1] > 9:
+        if joueur[0]['pos'][0] > 9 or joueur[1]['pos'][0] > 9 or joueur[0]['pos'][1] > 9 or joueur[1]['pos'][1] > 9:
             raise QuoridorError('Position invalide pour un joueur')
-        if joueurs[0]['pos'][0] < 0 or joueurs[1]['pos'][0] < 0 or joueurs[0]['pos'][1] < 0  or joueurs[1]['pos'][1] < 0:
+        if joueur[0]['pos'][0] < 0 or joueur[1]['pos'][0] < 0 or joueur[0]['pos'][1] < 0  or joueur[1]['pos'][1] < 0:
             raise QuoridorError('Position invalide pour un joueur')
         self.murs = murs
         self.jeu = jeu
-        self.joueur1 = joueur[0]
-        self.joueur2 = joueur[1]
+        self.joueur = joueur
     
     def __str__(self):
         nom = [self.jeu['joueurs'][0]['nom'], self.jeu['joueurs'][1]['nom']]
@@ -104,13 +104,14 @@ class Quoridor:
 
     #def déplacer_jeton(self, joueur, position):
        
-    #def état_partie(self):
+    def état_partie(self):
+        return self.jeu
 
     #def jouer_coup(self, joueur):
 
     #def partie_terminée(self):
    
-    #def placer_mur(self, joueur: int, position: tuple, orientation: str):
+    #def placer_mur(self, njoueur, position, orientation):
 
 test = Quoridor(({"nom": "idul", "murs": 7, "pos": [5, 6]},
         {"nom": "automate", "murs": 3, "pos": [5, 7]}),{
