@@ -10,6 +10,7 @@ class QuoridorError(Exception):
 
 
 class Quoridor:
+    #Initialisation de la classe
     def __init__(self, joueurs, murs=None):
         try:
             j = iter(joueurs)
@@ -43,7 +44,7 @@ class Quoridor:
         self.jeu = jeu
     
     def __str__(self):
-        jeu = self.jeu
+    jeu = self.jeu
         nom = [jeu['joueurs'][0]['nom'], jeu['joueurs'][1]['nom']]
         table = []
         let = [['  |', '    ', '    ', '    ', '    ', '    ', '    ', '    ', '    ', '   |'],
