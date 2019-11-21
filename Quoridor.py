@@ -22,20 +22,22 @@ class Quoridor:
         if isinstance(murs, dict) is False and murs != None:
             raise QuoridorError("murs ce doit d'être un dictionnaire")
         
-        #Création des dictionnaire joueur
+        #Création des dictionnaires joueur
         joueur = []
         for jou in joueurs:
             if isinstance(jou, str):
                 joueur.append({'nom': joueur, 'murs': 10, 'pos': (5,1)})
             if isinstance(jou, dict):
                 joueur.append(jou)
-        
         #Vérification du nombre de murs
         if joueurs[0]['murs'] > 10 or joueurs[1]['murs'] > 10 or joueurs[0]['murs'] < 0 or joueurs[1]['murs'] < 0:
             raise QuoridorError('Nombre de murs invalides')
+        
+        #Création de l'état de jeu et des dictionnaires murs
         if murs == None:
             jeu = {'joueurs': [joueurs[0], joueurs[1]], 'murs': {'horizontaux':[], 'verticaux': []}}
-        if murs != None:
+            murs = {'murs': {'horizontaux':[], 'verticaux': []}}
+        else:
             jeu = {'joueurs': [joueurs[0], joueurs[1]], 'murs': murs}
             nmurs = len(murs['horizontaux']) + len(murs['verticaux']) + joueurs[0]['murs'] + joueurs[1]['murs']
             if nmurs != 20:
@@ -46,7 +48,10 @@ class Quoridor:
             raise QuoridorError('Position invalide pour un joueur')
         if joueurs[0]['pos'][0] < 0 or joueurs[1]['pos'][0] < 0 or joueurs[0]['pos'][1] < 0  or joueurs[1]['pos'][1] < 0:
             raise QuoridorError('Position invalide pour un joueur')
+        self.murs = murs
         self.jeu = jeu
+        self.joueur1 = joueur[0]
+        self.joueur2 = joueur[1]
     
     def __str__(self):
         jeu = self.jeu
