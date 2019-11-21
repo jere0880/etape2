@@ -171,7 +171,6 @@ class Quoridor:
         #Place le mur et enlève un mur au joueur qui place le mur
         joueur['murs'] -= 1
         self.jeu['murs'][orientation].append(position)
->>>>>>> 2c76f08669f9970f7371beb90fab04fd8eca57c5
 
 def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
     """
