@@ -54,7 +54,7 @@ class Quoridor:
             raise QuoridorError('Position invalide pour un joueur')
         self.murs = murs
         self.jeu = jeu
-        self.joueur = joueur
+        self.joueurs = joueur
     
     def __str__(self):
         nom = [self.jeu['joueurs'][0]['nom'], self.jeu['joueurs'][1]['nom']]
@@ -110,9 +110,14 @@ class Quoridor:
             raise QuoridorError('le numéro du joueur est autre que 1 ou 2.')
         if position[0] not in range(1, 10) or position[0] not in range(1, 10):
             raise QuoridorError('la position est invalide (en dehors du damier).')
-        if position not in graphe.successors(joueurs[joueur]):
-            raise QuoridorError('la position est invalide pour l'état actuel du jeu.')
-       
+        graphe = construire_graphe([joueur['pos'] for joueur in self.joueurs], self.murs['horizontaux'], self.murs['verticaux'])
+        print(list(graphe.successors((self.joueurs[joueur - 1]['pos']))))
+        #if position not in list(graphe.successors(self.joueurs[joueur])):
+            #print(1)
+            #raise QuoridorError("la position est invalide pour l'état actuel du jeu.")
+
+    
+
     def état_partie(self):
         return self.jeu
 
@@ -121,8 +126,7 @@ class Quoridor:
     #def partie_terminée(self):
 
   
-   #def placer_mur(self, joueur: int, position: tuple, orientation: str):
-
+    #def placer_mur(self, joueur: int, position: tuple, orientation: str):
 
 def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
     """
@@ -190,6 +194,7 @@ def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
 
     return graphe
 
+
 ###Programme###
 
 test = Quoridor(({"nom": "idul", "murs": 7, "pos": [5, 6]},
@@ -197,4 +202,5 @@ test = Quoridor(({"nom": "idul", "murs": 7, "pos": [5, 6]},
         "horizontaux": [[4, 4], [2, 6], [3, 8], [5, 8], [7, 8]],
         "verticaux": [[6, 2], [4, 4], [2, 5], [7, 5], [7, 7]]
     })
+test.déplacer_jeton(2, (5,6))
 print(test)
