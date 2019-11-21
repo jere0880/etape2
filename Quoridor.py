@@ -12,6 +12,7 @@ class QuoridorError(Exception):
 class Quoridor:
     #Initialisation de la classe
     def __init__(self, joueurs, murs=None):
+        #Vérification de l'itérabilité de joueurs
         try:
             j = iter(joueurs)
         except TypeError as te:
