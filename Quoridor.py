@@ -123,7 +123,7 @@ class Quoridor:
         return damier
 
     def déplacer_jeton(self, joueur, position):
-        # Le numero du joeur est autre que 1 ou 2.
+        # Le numero du joueur est autre que 1 ou 2.
         if joueur not in [1, 2]:
             raise QuoridorError('le numéro du joueur est autre que 1 ou 2.')
         # La position n'est pas entre 1 et 10 en x et y.
@@ -138,7 +138,26 @@ class Quoridor:
     def état_partie(self):
         return self.jeu
 
-    #def jouer_coup(self, joueur):
+    def jouer_coup(self, joueur):
+        # Le numero du joueur est autre que 1 ou 2.
+        if joueur not in [1, 2]:
+            raise QuoridorError('le numéro du joueur est autre que 1 ou 2.')
+        # Crée un graphe  de l'état
+        graphe = construire_graphe([joueur['pos'] for joueur in self.joueurs], self.murs['horizontaux'], self.murs['verticaux'])
+        # joeur encerclé
+        if nx.has_path(graphe, tuple(self.joueurs[joueur - 1]['pos']), f'B{joueur}') == False:
+            raise QuoridorError('Le joeur est encerclé')
+        # Compare le joueur plus proche de la ligne d'arrivé 
+        joueur2 = 1
+        if joueur == 1:
+            joueur2 = 2
+        # Si plus proche -> shortest path
+        if len(nx.shortest_path(graphe, tuple(self.joueurs[joueur - 1]['pos']), f'B{joueur}')) <= len(nx.shortest_path(graphe, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}')):
+            self.déplacer_jeton(joueur, nx.shortest_path(graphe, tuple(self.joueurs[joueur - 1]['pos']), f'B{joueur}')[1])
+
+
+        
+
 
     #def partie_terminée(self):
 
@@ -244,7 +263,7 @@ test = Quoridor(({"nom": "idul", "murs": 7, "pos": [5, 6]},
         "horizontaux": [[4, 4], [2, 6], [3, 8], [5, 8], [7, 8]],
         "verticaux": [[6, 2], [4, 4], [2, 5], [7, 5], [7, 7]]
     })
-test.déplacer_jeton(2, (5,5))
+test.jouer_coup(1)
 print(test)
 Quoridor.placer_mur(test, 2, (3, 7), 'horizontaux')
 print(test)
