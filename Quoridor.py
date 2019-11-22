@@ -154,7 +154,15 @@ class Quoridor:
         # Si plus proche -> shortest path
         if len(nx.shortest_path(graphe, tuple(self.joueurs[joueur - 1]['pos']), f'B{joueur}')) <= len(nx.shortest_path(graphe, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}')):
             self.déplacer_jeton(joueur, nx.shortest_path(graphe, tuple(self.joueurs[joueur - 1]['pos']), f'B{joueur}')[1])
-
+        # Si plus loin 
+        else:
+            # Si shortest path est en y = murv
+            if nx.shortest_path(graphe, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}')[1][0] == tuple(self.joueurs[joueur2 - 1]['pos'])[0]:
+                self.placer_mur(joueur, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}', 'vertical')
+            # Si shortest path est en x = murh
+            if nx.shortest_path(graphe, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}')[1][1] == tuple(self.joueurs[joueur2 - 1]['pos'])[1]:
+                self.placer_mur(joueur, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}', 'horizontal')
+            
 
         
 
@@ -263,7 +271,7 @@ test = Quoridor(({"nom": "idul", "murs": 7, "pos": [5, 6]},
         "horizontaux": [[4, 4], [2, 6], [3, 8], [5, 8], [7, 8]],
         "verticaux": [[6, 2], [4, 4], [2, 5], [7, 5], [7, 7]]
     })
-test.jouer_coup(1)
+test.jouer_coup(2)
 print(test)
 Quoridor.placer_mur(test, 2, (3, 7), 'horizontaux')
 print(test)
