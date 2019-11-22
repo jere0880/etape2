@@ -167,7 +167,12 @@ class Quoridor:
         
 
 
-    #def partie_terminée(self):
+    def partie_terminée(self):
+        if 'gagnant' in self.jeu:
+            gagnant = self.jeu['gagnant']
+            return f'Le gagnant est {gagnant}'
+        else:
+            return False
 
     def placer_mur(self, njoueur, position, orientation):
         #Vérifie le numéro du joueur
@@ -276,3 +281,8 @@ print(test)
 Quoridor.placer_mur(test, 2, (3, 7), 'horizontaux')
 print(test)
 print(Quoridor.état_partie(test))
+Quoridor.jouer_coup(test, 1)
+print(Quoridor.état_partie(test))
+Quoridor.déplacer_jeton(test, 1, (4,6))
+print(test)
+print(Quoridor.partie_terminée(test))
