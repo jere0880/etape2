@@ -27,9 +27,11 @@ class Quoridor:
         
         #Création des dictionnaires joueur
         joueur = []
-        for jou in joueurs:
-            if isinstance(jou, str):
+        for l, jou in enumerate(joueurs):
+            if isinstance(jou, str) and l == 0:
                 joueur.append({'nom': jou, 'murs': 10, 'pos': (5,1)})
+            if isinstance(jou, str) and l == 1:
+                joueur.append({'nom': jou, 'murs': 10, 'pos': (5,9)})
             if isinstance(jou, dict):
                 joueur.append(jou)
 
@@ -162,11 +164,11 @@ class Quoridor:
             # Si shortest path est en x = murh
             if nx.shortest_path(graphe, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}')[1][1] == tuple(self.joueurs[joueur2 - 1]['pos'])[1]:
                 self.placer_mur(joueur, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}', 'horizontal')
+
             
 
+  
         
-
-
     def partie_terminée(self):
         if 'gagnant' in self.jeu:
             gagnant = self.jeu['gagnant']
@@ -286,3 +288,5 @@ print(Quoridor.état_partie(test))
 Quoridor.déplacer_jeton(test, 1, (4,6))
 print(test)
 print(Quoridor.partie_terminée(test))
+test1 = Quoridor(['A', 'B'])
+print(test1)
