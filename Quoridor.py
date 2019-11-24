@@ -144,9 +144,9 @@ class Quoridor:
             raise QuoridorError('le numéro du joueur est autre que 1 ou 2.')
         # Crée un graphe  de l'état
         graphe = construire_graphe([joueur['pos'] for joueur in self.joueurs], self.murs['horizontaux'], self.murs['verticaux'])
-        # joeur encerclé
+        # joueur encerclé
         if nx.has_path(graphe, tuple(self.joueurs[joueur - 1]['pos']), f'B{joueur}') == False:
-            raise QuoridorError('Le joeur est encerclé')
+            raise QuoridorError('Le joueur est encerclé')
         # Compare le joueur plus proche de la ligne d'arrivé 
         joueur2 = 1
         if joueur == 1:
