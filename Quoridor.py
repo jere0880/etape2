@@ -135,6 +135,8 @@ class Quoridor:
         graphe = construire_graphe([joueur['pos'] for joueur in self.joueurs], self.murs['horizontaux'], self.murs['verticaux'])
         if position not in list(graphe.successors(((tuple(self.joueurs[joueur - 1]['pos']))))):
             raise QuoridorError("la position est invalide pour l'état actuel du jeu.")
+        self.joueurs[joueur - 1]["pos"] = position
+        
 
     
     def état_partie(self):
@@ -153,17 +155,30 @@ class Quoridor:
         joueur2 = 1
         if joueur == 1:
             joueur2 = 2
+        #positions des joueurs
+        pos1 = tuple(self.joueurs[joueur - 1]['pos'])
+        pos2 = tuple(self.joueurs[joueur2 - 1]['pos'])
         # Si plus proche -> shortest path
-        if len(nx.shortest_path(graphe, tuple(self.joueurs[joueur - 1]['pos']), f'B{joueur}')) <= len(nx.shortest_path(graphe, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}')):
-            self.déplacer_jeton(joueur, nx.shortest_path(graphe, tuple(self.joueurs[joueur - 1]['pos']), f'B{joueur}')[1])
+        if len(nx.shortest_path(graphe, pos1, f'B{joueur}')) <= len(nx.shortest_path(graphe, pos2, f'B{joueur2}')):
+            self.déplacer_jeton(joueur, nx.shortest_path(graphe, pos1, f'B{joueur}')[1])
         # Si plus loin 
         else:
-            # Si shortest path est en y = murv
-            if nx.shortest_path(graphe, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}')[1][0] == tuple(self.joueurs[joueur2 - 1]['pos'])[0]:
-                self.placer_mur(joueur, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}', 'vertical')
-            # Si shortest path est en x = murh
-            if nx.shortest_path(graphe, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}')[1][1] == tuple(self.joueurs[joueur2 - 1]['pos'])[1]:
-                self.placer_mur(joueur, tuple(self.joueurs[joueur2 - 1]['pos']), f'B{joueur2}', 'horizontal')
+            while True:
+                # Si shortest path est en y = murv
+                if nx.shortest_path(graphe, pos2, f'B{joueur2}')[1][0] == pos1[0]:
+                    try:
+                        self.placer_mur(joueur, pos2, f'B{joueur2}', 'vertical')
+                    # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
+                    except QuoridorError:
+                        self.déplacer_jeton(joueur, nx.shortest_path(graphe, pos1, f'B{joueur}')[1])
+                # Si shortest path est en x = murh
+                if nx.shortest_path(graphe, pos2, f'B{joueur2}')[1][1] == pos2[1]:
+                    try:
+                        self.placer_mur(joueur, pos2, f'B{joueur2}', 'horizontal')
+                    # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
+                    except QuoridorError:
+                        self.déplacer_jeton(joueur, nx.shortest_path(graphe, pos1, f'B{joueur}')[1])
+
 
             
 
@@ -278,15 +293,7 @@ test = Quoridor(({"nom": "idul", "murs": 7, "pos": [5, 6]},
         "horizontaux": [[4, 4], [2, 6], [3, 8], [5, 8], [7, 8]],
         "verticaux": [[6, 2], [4, 4], [2, 5], [7, 5], [7, 7]]
     })
-test.jouer_coup(2)
 print(test)
-Quoridor.placer_mur(test, 2, (3, 7), 'horizontaux')
-print(test)
-print(Quoridor.état_partie(test))
-Quoridor.jouer_coup(test, 1)
-print(Quoridor.état_partie(test))
-Quoridor.déplacer_jeton(test, 1, (4,6))
-print(test)
-print(Quoridor.partie_terminée(test))
-test1 = Quoridor(['A', 'B'])
-print(test1)
+print(test.jouer_coup(2))
+
+
