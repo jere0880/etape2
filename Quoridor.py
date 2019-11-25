@@ -14,7 +14,7 @@ class Quoridor:
         #Vérification de l'itérabilité de joueurs
         try:
             j = iter(joueurs)
-        except TypeError as te:
+        except TypeError:
             raise QuoridorError("joueurs n'est pas itérable")
         
         #Vérification que joueurs contient 2 éléments
@@ -38,7 +38,7 @@ class Quoridor:
         #Création de l'état de jeu et des dictionnaires murs
         if murs == None:
             jeu = {'joueurs': [joueur[0], joueur[1]], 'murs': {'horizontaux':[], 'verticaux': []}}
-            murs = {'murs': {'horizontaux':[], 'verticaux': []}}
+            murs = {'horizontaux':[], 'verticaux': []}
         else:
             jeu = {'joueurs': [joueur[0], joueur[1]], 'murs': murs}
             nmurs = len(murs['horizontaux']) + len(murs['verticaux']) + joueur[0]['murs'] + joueur[1]['murs']
@@ -129,7 +129,7 @@ class Quoridor:
         if joueur not in [1, 2]:
             raise QuoridorError('le numéro du joueur est autre que 1 ou 2.')
         # La position n'est pas entre 1 et 10 en x et y.
-        if position[0] not in range(1, 10) or position[0] not in range(1, 10):
+        if position[0] not in range(1, 10) or position[1] not in range(1, 10):
             raise QuoridorError('la position est invalide (en dehors du damier).')
         # Crée un graphe avec networkx et verifie si la position est disponible
         graphe = construire_graphe([joueur['pos'] for joueur in self.joueurs], self.murs['horizontaux'], self.murs['verticaux'])
@@ -167,14 +167,14 @@ class Quoridor:
                 # Si shortest path est en y = murv
                 if nx.shortest_path(graphe, pos2, f'B{joueur2}')[1][0] == pos1[0]:
                     try:
-                        self.placer_mur(joueur, pos2, f'B{joueur2}', 'vertical')
+                        self.placer_mur(joueur, pos2, 'verticaux')
                     # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
                     except QuoridorError:
                         self.déplacer_jeton(joueur, nx.shortest_path(graphe, pos1, f'B{joueur}')[1])
                 # Si shortest path est en x = murh
                 if nx.shortest_path(graphe, pos2, f'B{joueur2}')[1][1] == pos2[1]:
                     try:
-                        self.placer_mur(joueur, pos2, f'B{joueur2}', 'horizontal')
+                        self.placer_mur(joueur, pos2, 'horizontaux')
                     # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
                     except QuoridorError:
                         self.déplacer_jeton(joueur, nx.shortest_path(graphe, pos1, f'B{joueur}')[1])
@@ -201,14 +201,23 @@ class Quoridor:
         if joueur['murs'] == 0:
             raise QuoridorError('le joueur a déjà placé tous ses murs')
         #Vérifie que la place est libre pour le mur
-        for m in self.murs[orientation]:
+        for m in self.jeu['murs'][orientation]:
             if m[0] == position[0] and m[1] == position[1]:
                 raise QuoridorError('un mur occupe déjà cette position')
             if orientation == 'horizontaux':
+                auorien = 'verticaux'
                 if m[1] == position[1] and (m[0] == position[0] or m[0] == position[0] - 1 or m[0] == position[0] + 1):
                     raise QuoridorError('un mur occupe déjà cette position')
             if orientation == 'verticaux':
+                auorien = 'horizontaux'
                 if m[0] == position[0] and (m[1] == position[1] or m[1] == position[1] - 1 or m[1] == position[1] + 1):
+                    raise QuoridorError('un mur occupe déjà cette position')
+        for ma in self.murs[auorien]:
+            if orientation == 'horizontaux':
+                if position[0] == ma[0] - 1 and position[1] == ma[1] + 1:
+                    raise QuoridorError('un mur occupe déjà cette position')
+            if orientation == 'verticaux':
+                if position[0] == ma[0] + 1 and position[1] == ma[1] - 1:
                     raise QuoridorError('un mur occupe déjà cette position')
         #Vérifie que la position est valide
         if orientation == 'horizontaux':
@@ -219,7 +228,8 @@ class Quoridor:
                 raise QuoridorError('la position est invalide pour cette orientation')
         #Place le mur et enlève un mur au joueur qui place le mur
         joueur['murs'] -= 1
-        self.jeu['murs'][orientation].append(position)
+        self.murs[orientation].append(position)
+
 
 def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
     """
@@ -293,7 +303,18 @@ test = Quoridor(({"nom": "idul", "murs": 7, "pos": [5, 6]},
         "horizontaux": [[4, 4], [2, 6], [3, 8], [5, 8], [7, 8]],
         "verticaux": [[6, 2], [4, 4], [2, 5], [7, 5], [7, 7]]
     })
-print(test)
-print(test.jouer_coup(2))
 
+print(test)
+test1 = Quoridor(('Hello','Goodbye'))
+#print(test1)
+#for i in range(10):
+    #Quoridor.jouer_coup(test, 1)
+    #print(test)
+    #Quoridor.jouer_coup(test, 2)
+    #print(test)
+#for i in range(10):
+    #Quoridor.jouer_coup(test1, 1)
+    #print(test1)
+    #Quoridor.jouer_coup(test1, 2)
+    #print(test1)
 
