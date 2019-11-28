@@ -165,31 +165,30 @@ class Quoridor:
             return
         # Si plus loin 
         else:
-            print(nx.shortest_path(graphe, pos2, f'B{joueur2}')[1:])
             for deplacement in nx.shortest_path(graphe, pos2, f'B{joueur2}')[1:]:
                 # Si shortest path est en x = murv
-                print(pos2)
                 if deplacement[1] == pos2[1]:
                     # Si deplacement vers la gauche, murv a gauche
                     if deplacement[0] == pos2[0] - 1:
                         try:
-                            self.placer_mur(joueur, tuple(map(sum, zip(pos2, (0, 1 - joueur2)))), 'verticaux')
-                            return 
+                            self.placer_mur(joueur, tuple(map(sum, zip(pos2, (0, -1 * (2 - joueur2))))), 'verticaux')
+                            return
                         # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
                         except QuoridorError:
                             try:
-                                self.placer_mur(joueur, tuple(map(sum, zip(pos2, (0, joueur2 - joueur)))), 'verticaux')
+                                self.placer_mur(joueur, tuple(map(sum, zip(pos2, (0, 1 - joueur2)))), 'verticaux')
                                 return
                             except QuoridorError:
                                 pos2 = deplacement
                                 continue
+                    # murv a droite
                     else:
                         try:
-                            self.placer_mur(joueur, tuple(map(sum, zip(pos2, (1, 0)))), 'verticaux')
+                            self.placer_mur(joueur, tuple(map(sum, zip(pos2, (1, -1 * (2 - joueur2))))), 'verticaux')
                             return
                         except QuoridorError:
                             try:
-                                self.placer_mur(joueur, tuple(map(sum, zip(pos2, (1, -1)))), 'verticaux')
+                                self.placer_mur(joueur, tuple(map(sum, zip(pos2, (1, 1 - joueur2)))), 'verticaux')
                                 return
                             except QuoridorError:
                                 pos2 = deplacement
@@ -256,6 +255,13 @@ class Quoridor:
         #Place le mur et enlève un mur au joueur qui place le mur
         joueur['murs'] -= 1
         self.jeu['murs'][orientation].append(position)
+        # Vérifie que le mur placé ne bloque pas les joueurs
+        graphe = construire_graphe([joueur['pos'] for joueur in self.joueurs], self.murs['horizontaux'], self.murs['verticaux'])
+        for i, joueur in enumerate(self.joueurs):
+            if nx.has_path(graphe, tuple(joueur['pos']), f'B{i+1}') == False:
+                self.jeu['murs'][orientation].pop()
+                raise QuoridorError('La position du ur est invalide')
+
 
 
 def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
