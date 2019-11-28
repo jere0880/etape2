@@ -341,11 +341,12 @@ print(test)
 test1 = Quoridor(('Hello','Goodbye'))
 
 #print(test1)
-for i in range(30):
+while Quoridor.partie_terminée(test) is False:
     Quoridor.jouer_coup(test, 1)
     print(test)
     Quoridor.jouer_coup(test, 2)
     print(test)
+print(Quoridor.partie_terminée(test))
 #for i in range(10):
     #Quoridor.jouer_coup(test1, 1)
     #print(test1)
