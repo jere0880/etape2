@@ -134,7 +134,9 @@ class Quoridor:
         if position not in list(graphe.successors(((tuple(self.joueurs[joueur - 1]['pos']))))):
             raise QuoridorError("la position est invalide pour l'état actuel du jeu.")
         if position[1] == 9 and joueur == 1:
-            self.jeu.append({"gagnant": "Le joeur 1 "})
+            self.jeu.append({"gagnant": "Le joueur 1 est le vainqueur"})
+        if position[1] == 1 and joueur == 2:
+            self.jeu.append({"gagnant": "Le joueur 2 est le vainqueur"})
         self.joueurs[joueur - 1]["pos"] = position
         
 
