@@ -134,9 +134,9 @@ class Quoridor:
         if position not in list(graphe.successors(((tuple(self.joueurs[joueur - 1]['pos']))))):
             raise QuoridorError("la position est invalide pour l'état actuel du jeu.")
         if position[1] == 9 and joueur == 1:
-            self.jeu.append({"gagnant": "Le joueur 1 est le vainqueur"})
+            self.jeu["gagnant"] = self.joueurs[0]["nom"]
         if position[1] == 1 and joueur == 2:
-            self.jeu.append({"gagnant": "Le joueur 2 est le vainqueur"})
+            self.jeu["gagnant"] = self.joueurs[1]["nom"]
         self.joueurs[joueur - 1]["pos"] = position
         
 
@@ -214,8 +214,7 @@ class Quoridor:
         
     def partie_terminée(self):
         if 'gagnant' in self.jeu:
-            gagnant = self.jeu['gagnant']
-            return f'Le gagnant est {gagnant}'
+            return self.jeu['gagnant']
         else:
             return False
 
@@ -336,7 +335,7 @@ print(test)
 test1 = Quoridor(('Hello','Goodbye'))
 
 #print(test1)
-for i in range(5):
+for i in range(30):
     Quoridor.jouer_coup(test, 1)
     print(test)
     Quoridor.jouer_coup(test, 2)
