@@ -12,9 +12,7 @@ class QuoridorError(Exception):
 class Quoridor:
     def __init__(self, joueurs, murs=None):
         #Vérification de l'itérabilité de joueurs
-        try:
-            j = iter(joueurs)
-        except TypeError:
+        if isinstance(joueurs, (int, float)):
             raise QuoridorError("joueurs n'est pas itérable")
         
         #Vérification que joueurs contient 2 éléments
@@ -212,16 +210,23 @@ class Quoridor:
         #Vérifie qu'il reste des murs à placer pour le joueur désigné
         if joueur['murs'] == 0:
             raise QuoridorError('le joueur a déjà placé tous ses murs')
+        #Vérifie que la position est valide
+        if orientation == 'horizontaux':
+            auorien = 'verticaux'
+            if position[0] < 1 or position[0] > 8 or position[1] < 2 or position[1] > 9:
+                raise QuoridorError('la position est invalide pour cette orientation')
+        if orientation == 'verticaux':
+            auorien = 'horizontaux'
+            if position[0] < 2 or position[0] > 9 or position[1] < 1 or position[1] > 8:
+                raise QuoridorError('la position est invalide pour cette orientation')
         #Vérifie que la place est libre pour le mur
         for m in self.jeu['murs'][orientation]:
             if m[0] == position[0] and m[1] == position[1]:
                 raise QuoridorError('un mur occupe déjà cette position')
             if orientation == 'horizontaux':
-                auorien = 'verticaux'
                 if m[1] == position[1] and (m[0] == position[0] or m[0] == position[0] - 1 or m[0] == position[0] + 1):
                     raise QuoridorError('un mur occupe déjà cette position')
             if orientation == 'verticaux':
-                auorien = 'horizontaux'
                 if m[0] == position[0] and (m[1] == position[1] or m[1] == position[1] - 1 or m[1] == position[1] + 1):
                     raise QuoridorError('un mur occupe déjà cette position')
         for ma in self.murs[auorien]:
@@ -231,16 +236,9 @@ class Quoridor:
             if orientation == 'verticaux':
                 if position[0] == ma[0] + 1 and position[1] == ma[1] - 1:
                     raise QuoridorError('un mur occupe déjà cette position')
-        #Vérifie que la position est valide
-        if orientation == 'horizontaux':
-            if position[0] < 1 or position[0] > 8 or position[1] < 2 or position[1] > 9:
-                raise QuoridorError('la position est invalide pour cette orientation')
-        if orientation == 'verticaux':
-            if position[0] < 2 or position[0] > 9 or position[1] < 1 or position[1] > 8:
-                raise QuoridorError('la position est invalide pour cette orientation')
         #Place le mur et enlève un mur au joueur qui place le mur
         joueur['murs'] -= 1
-        self.murs[orientation].append(position)
+        self.jeu['murs'][orientation].append(position)
 
 
 def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
@@ -330,4 +328,3 @@ for i in range(10):
     #print(test1)
     #Quoridor.jouer_coup(test1, 2)
     #print(test1)
-
