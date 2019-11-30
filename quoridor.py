@@ -148,7 +148,8 @@ class Quoridor:
         if self.partie_terminée():
             raise QuoridorError('La partie est déjà terminée.')
         # Crée un graphe  de l'état
-        graphe = construire_graphe([joueur['pos'] for joueur in self.joueurs], self.murs['horizontaux'], self.murs['verticaux'])
+        graphe = (construire_graphe([joueur['pos'] for joueur in self.joueurs],
+        self.murs['horizontaux'], self.murs['verticaux']))
         # Compare le joueur plus proche de la ligne d'arrivé 
         joueur2 = 1
         if joueur == 1:
@@ -157,7 +158,8 @@ class Quoridor:
         pos1 = tuple(self.joueurs[joueur - 1]['pos'])
         pos2 = tuple(self.joueurs[joueur2 - 1]['pos'])
         # Si plus proche -> shortest path
-        if len(nx.shortest_path(graphe, pos1, f'B{joueur}')) <= len(nx.shortest_path(graphe, pos2, f'B{joueur2}')):
+        if (len(nx.shortest_path(graphe, pos1, f'B{joueur}'))
+        <= len(nx.shortest_path(graphe, pos2, f'B{joueur2}'))):
             self.déplacer_jeton(joueur, nx.shortest_path(graphe, pos1, f'B{joueur}')[1])
             return
         # Si plus loin
@@ -167,12 +169,14 @@ class Quoridor:
                 # Si deplacement vers la gauche, murv a gauche
                 if deplacement[0] == pos2[0] - 1:
                     try:
-                        self.placer_mur(joueur, tuple(map(sum, zip(pos2, (0, -1 * (2 - joueur2))))), 'verticaux')
+                        self.placer_mur(joueur, tuple(map
+                        (sum, zip(pos2, (0, -1 * (2 - joueur2))))), 'verticaux')
                         return
                     # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
                     except QuoridorError:
                         try:
-                            self.placer_mur(joueur, tuple(map(sum, zip(pos2, (0, 1 - joueur2)))), 'verticaux')
+                            self.placer_mur(joueur, tuple(map
+                            (sum, zip(pos2, (0, 1 - joueur2)))), 'verticaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
@@ -180,11 +184,13 @@ class Quoridor:
                 # murv a droite
                 else:
                     try:
-                        self.placer_mur(joueur, tuple(map(sum, zip(pos2, (1, -1 * (2 - joueur2))))), 'verticaux')
+                        self.placer_mur(joueur, tuple(map
+                        (sum, zip(pos2, (1, -1 * (2 - joueur2))))), 'verticaux')
                         return
                     except QuoridorError:
                         try:
-                            self.placer_mur(joueur, tuple(map(sum, zip(pos2, (1, 1 - joueur2)))), 'verticaux')
+                            self.placer_mur(joueur, tuple(map
+                            (sum, zip(pos2, (1, 1 - joueur2)))), 'verticaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
@@ -194,12 +200,14 @@ class Quoridor:
                 # Mur h devant le joueur si deplacement vers  l'objectif
                 if deplacement[1] == pos2[1] + 1:
                     try:
-                        self.placer_mur(joueur, tuple(map(sum, zip(pos2, (0, joueur - 1)))), 'horizontaux')
+                        self.placer_mur(joueur, tuple(map
+                        (sum, zip(pos2, (0, joueur - 1)))), 'horizontaux')
                         return
                     # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
                     except QuoridorError:
                         try:
-                            self.placer_mur(joueur, tuple(map(sum, zip(pos2, (-1, joueur - 1)))), 'horizontaux')
+                            self.placer_mur(joueur, tuple(map
+                            (sum, zip(pos2, (-1, joueur - 1)))), 'horizontaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
@@ -235,10 +243,12 @@ class Quoridor:
             if m[0] == position[0] and m[1] == position[1]:
                 raise QuoridorError('un mur occupe déjà cette position')
             if orientation == 'horizontaux':
-                if m[1] == position[1] and (m[0] == position[0] or m[0] == position[0] - 1 or m[0] == position[0] + 1):
+                if (m[1] == position[1] and (m[0] == position[0]
+                or m[0] == position[0] - 1 or m[0] == position[0] + 1)):
                     raise QuoridorError('un mur occupe déjà cette position')
             if orientation == 'verticaux':
-                if m[0] == position[0] and (m[1] == position[1] or m[1] == position[1] - 1 or m[1] == position[1] + 1):
+                if (m[0] == position[0] and (m[1] == position[1]
+                or m[1] == position[1] - 1 or m[1] == position[1] + 1)):
                     raise QuoridorError('un mur occupe déjà cette position')
         for ma in self.murs[auorien]:
             if orientation == 'horizontaux':
