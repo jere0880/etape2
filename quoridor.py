@@ -21,6 +21,7 @@ class Quoridor:
             raise QuoridorError("murs ce doit d'être un dictionnaire")
         #Création des dictionnaires joueur
         joueur = []
+        jeu = {}
         for index5, jou in enumerate(joueurs):
             if isinstance(jou, str) and index5 == 0:
                 joueur.append({'nom': jou, 'murs': 10, 'pos': (5, 1)})
@@ -28,12 +29,16 @@ class Quoridor:
                 joueur.append({'nom': jou, 'murs': 10, 'pos': (5, 9)})
             if isinstance(jou, dict):
                 joueur.append(jou)
+                if jou['pos'][1] == 9 and index5 == 0:
+                    jeu["gagnant"] = jou["nom"]
+                if jou['pos'][1] == 1 and index5 == 1:
+                    jeu["gagnant"] = jou["nom"]
         #Création de l'état de jeu et des dictionnaires murs
         if murs is None:
-            jeu = {'joueurs': [joueur[0], joueur[1]], 'murs': {'horizontaux':[], 'verticaux': []}}
+            jeu['joueurs'], jeu['murs'] = [joueur[0], joueur[1]], {'horizontaux':[], 'verticaux': []}
             murs = {'horizontaux':[], 'verticaux': []}
         else:
-            jeu = {'joueurs': [joueur[0], joueur[1]], 'murs': murs}
+            jeu['joueurs'], jeu['murs'] = [joueur[0], joueur[1]], murs
             nmurs = (len(murs['horizontaux'])
                      + len(murs['verticaux']) + joueur[0]['murs'] + joueur[1]['murs'])
             #Vérification du nombre de murs
