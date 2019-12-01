@@ -62,8 +62,8 @@ class Quoridor:
             del muh[index3]
             for mhp in muh:
                 if ((mh[1] == mhp[1] and (mh[0] == mhp[0]
-                                        or mh[0] == mhp[0] + 1))
-                                        or mh[0] not in range(1, 9) 
+                                          or mh[0] == mhp[0] + 1))
+                                        or mh[0] not in range(1, 9)
                                         or mh[1] not in range(2, 10)):
                     raise QuoridorError('Position de murs invalide')
             for murv in mur['verticaux']:
@@ -74,9 +74,9 @@ class Quoridor:
             del muv[index4]
             for mvp in muv:
                 if ((mv[0] == mvp[0] and (mv[1] == mvp[1]
-                                    or mv[1] == mvp[1] + 1))
-                                    or mv[0] not in range(2, 10)
-                                    or mv[1] not in range(1, 9)):
+                                          or mv[1] == mvp[1] + 1))
+                            or mv[0] not in range(2, 10)
+                            or mv[1] not in range(1, 9)):
                     raise QuoridorError('Position de murs invalide')
             for murh in mur['horizontaux']:
                 if murh[0] == mv[0] + 1 and murh[1] == mv[1] - 1:
@@ -140,9 +140,9 @@ class Quoridor:
             raise QuoridorError('la position est invalide (en dehors du damier).')
         # Crée un graphe avec networkx et verifie si la position est disponible
         graphe = self.construire_graphe([joueur['pos'] for joueur in self.jeu['joueurs']],
-                                   self.jeu['murs']['horizontaux'], self.jeu['murs']['verticaux'])
+                                        self.jeu['murs']['horizontaux'], self.jeu['murs']['verticaux'])
         if position not in list(graphe.successors(((
-                                   tuple(self.jeu['joueurs'][joueur - 1]['pos']))))):
+                    tuple(self.jeu['joueurs'][joueur - 1]['pos']))))):
             raise QuoridorError("la position est invalide pour l'état actuel du jeu.")
         if position[1] == 9 and joueur == 1:
             self.jeu["gagnant"] = self.jeu['joueurs'][0]["nom"]
@@ -162,13 +162,14 @@ class Quoridor:
                     try:
                         self.placer_mur(joueur, tuple(map
                                                       (sum, zip(
-                                                          pos2, (0, -1 * (2 - joueur2))))), 'verticaux')
+                                                          pos2, (0,
+                                                          -1 * (2 - joueur2))))), 'verticaux')
                         return
                     # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
                     except QuoridorError:
                         try:
                             self.placer_mur(joueur, tuple(map
-                                                          (sum, zip(
+                                                        (sum, zip(
                                                             pos2, (0, 1 - joueur2)))), 'verticaux')
                             return
                         except QuoridorError:
@@ -178,12 +179,14 @@ class Quoridor:
                 else:
                     try:
                         self.placer_mur(joueur, tuple(map
-                                                       (sum, zip(pos2, (1, -1 * (2 - joueur2))))), 'verticaux')
+                                                    (sum, zip(pos2, (1, -1 *
+                                                    (2 - joueur2))))), 'verticaux')
                         return
                     except QuoridorError:
                         try:
                             self.placer_mur(joueur, tuple(map
-                                                          (sum, zip(pos2, (1, 1 - joueur2)))), 'verticaux')
+                                                        (sum, zip(pos2,
+                                                        (1, 1 - joueur2)))), 'verticaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
@@ -218,7 +221,7 @@ class Quoridor:
             raise QuoridorError('La partie est déjà terminée.')
         # Crée un graphe  de l'état
         graphe = (self.construire_graphe([joueur['pos'] for joueur in self.jeu['joueurs']],
-                                    self.jeu['murs']['horizontaux'], self.jeu['murs']['verticaux']))
+                                         self.jeu['murs']['horizontaux'], self.jeu['murs']['verticaux']))
         # Compare le joueur plus proche de la ligne d'arrivé
         joueur2 = 1
         if joueur == 1:
@@ -238,12 +241,8 @@ class Quoridor:
         if 'gagnant' in self.jeu:
             return self.jeu['gagnant']
         return False
-    def verification_placer_mur(self, position, orientation):
+    def verification_placer_mur(self, position, orientation, auorien):
         """Méthode qui vérifie que le mur qui est placé est placé dans une place libre"""
-        if orientation == 'horizontaux':
-            auorien = 'verticaux'
-        if orientation == 'verticaux':
-            auorien = 'horizontaux'
         for m in self.jeu['murs'][orientation]:
             if m[0] == position[0] and m[1] == position[1]:
                 raise QuoridorError('un mur occupe déjà cette position')
@@ -284,26 +283,17 @@ class Quoridor:
             if position[0] < 2 or position[0] > 9 or position[1] < 1 or position[1] > 8:
                 raise QuoridorError('la position est invalide pour cette orientation')
         #Vérifie que la place est libre pour le mur
-        self.verification_placer_mur(position, orientation)
+        self.verification_placer_mur(position, orientation, auorien)
         #Place le mur et enlève un mur au joueur qui place le mur
         joueur['murs'] -= 1
         self.jeu['murs'][orientation].append(position)
         # Vérifie que le mur placé ne bloque pas les joueurs
         graphe = self.construire_graphe([joueur['pos'] for joueur in self.jeu['joueurs']],
-                                   self.jeu['murs']['horizontaux'], self.jeu['murs']['verticaux'])
+                                        self.jeu['murs']['horizontaux'], self.jeu['murs']['verticaux'])
         for i, joueur in enumerate(self.jeu['joueurs']):
             if nx.has_path(graphe, tuple(joueur['pos']), f'B{i+1}') == False:
                 self.jeu['murs'][orientation].pop()
                 raise QuoridorError('La position du mur est invalide')
-    def ajout_arcs(self, graphe, x, y):
-        if x > 1:
-            graphe.add_edge((x, y), (x-1, y))
-        if x < 9:
-            graphe.add_edge((x, y), (x+1, y))
-        if y > 1:
-            graphe.add_edge((x, y), (x, y-1))
-        if y < 9:
-            graphe.add_edge((x, y), (x, y+1))
     def construire_graphe(self, joueurs, murs_horizontaux, murs_verticaux):
         """Crée le graphe des déplacements admissibles pour les joueurs."""
         graphe = nx.DiGraph()
@@ -312,7 +302,7 @@ class Quoridor:
             # pour chaque ligne du damier
             for y in range(1, 10):
                 # ajouter les arcs de tous les déplacements possibles pour cette tuile
-                self.ajout_arcs(graphe, x, y)
+                ajout_arcs(graphe, x, y)
         # retirer tous les arcs qui croisent les murs horizontaux
         for x, y in murs_horizontaux:
             graphe.remove_edge((x, y-1), (x, y))
@@ -346,6 +336,17 @@ class Quoridor:
             graphe.add_edge((x, 1), 'B2')
         return graphe
 
+def ajout_arcs(graphe, x, y):
+    """Ajoute les arcs de tous les déplacements possibles pour une tuile"""
+    if x > 1:
+        graphe.add_edge((x, y), (x-1, y))
+    if x < 9:
+        graphe.add_edge((x, y), (x+1, y))
+    if y > 1:
+        graphe.add_edge((x, y), (x, y-1))
+    if y < 9:
+        graphe.add_edge((x, y), (x, y+1))
+
 ###Programme###
 TEST = Quoridor(({"nom": "idul", "murs": 10, "pos": [5, 1]},
                  {"nom": "automate", "murs": 10, "pos": [5, 9]}), {
@@ -355,7 +356,6 @@ TEST = Quoridor(({"nom": "idul", "murs": 10, "pos": [5, 1]},
 
 print(TEST)
 TEST1 = Quoridor(('Hello', 'Goodbye'))
-
 #print(test1)
 while Quoridor.partie_terminée(TEST) == False:
     Quoridor.jouer_coup(TEST, 1)
