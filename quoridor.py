@@ -75,8 +75,8 @@ class Quoridor:
             for mvp in muv:
                 if ((mv[0] == mvp[0] and (mv[1] == mvp[1]
                                           or mv[1] == mvp[1] + 1))
-                            or mv[0] not in range(2, 10)
-                            or mv[1] not in range(1, 9)):
+                        or mv[0] not in range(2, 10)
+                        or mv[1] not in range(1, 9)):
                     raise QuoridorError('Position de murs invalide')
             for murh in mur['horizontaux']:
                 if murh[0] == mv[0] + 1 and murh[1] == mv[1] - 1:
@@ -139,10 +139,11 @@ class Quoridor:
         if position[0] not in range(1, 10) or position[1] not in range(1, 10):
             raise QuoridorError('la position est invalide (en dehors du damier).')
         # Crée un graphe avec networkx et verifie si la position est disponible
-        graphe = self.construire_graphe([joueur['pos'] for joueur in self.jeu['joueurs']],
-                                        self.jeu['murs']['horizontaux'], self.jeu['murs']['verticaux'])
+        graphe = construire_graphe([joueur['pos'] for joueur in self.jeu['joueurs']],
+                                        self.jeu['murs']['horizontaux'],
+                                        self.jeu['murs']['verticaux'])
         if position not in list(graphe.successors(((
-                    tuple(self.jeu['joueurs'][joueur - 1]['pos']))))):
+                tuple(self.jeu['joueurs'][joueur - 1]['pos']))))):
             raise QuoridorError("la position est invalide pour l'état actuel du jeu.")
         if position[1] == 9 and joueur == 1:
             self.jeu["gagnant"] = self.jeu['joueurs'][0]["nom"]
@@ -160,17 +161,14 @@ class Quoridor:
                 # Si deplacement vers la gauche, murv a gauche
                 if deplacement[0] == pos2[0] - 1:
                     try:
-                        self.placer_mur(joueur, tuple(map
-                                                      (sum, zip(
-                                                          pos2, (0,
-                                                          -1 * (2 - joueur2))))), 'verticaux')
+                        self.placer_mur(joueur, tuple(map(sum, zip(pos2,
+                        (0, -1 * (2 - joueur2))))), 'verticaux')
                         return
                     # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
                     except QuoridorError:
                         try:
-                            self.placer_mur(joueur, tuple(map
-                                                        (sum, zip(
-                                                            pos2, (0, 1 - joueur2)))), 'verticaux')
+                            self.placer_mur(joueur, tuple(map(sum, zip(pos2,
+                            (0, 1 - joueur2)))), 'verticaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
@@ -178,15 +176,13 @@ class Quoridor:
                 # murv a droite
                 else:
                     try:
-                        self.placer_mur(joueur, tuple(map
-                                                    (sum, zip(pos2, (1, -1 *
-                                                    (2 - joueur2))))), 'verticaux')
+                        self.placer_mur(joueur, tuple(map(sum, zip(pos2,
+                        (1, -1 *(2 - joueur2))))), 'verticaux')
                         return
                     except QuoridorError:
                         try:
-                            self.placer_mur(joueur, tuple(map
-                                                        (sum, zip(pos2,
-                                                        (1, 1 - joueur2)))), 'verticaux')
+                            self.placer_mur(joueur, tuple(map(sum, zip(pos2,
+                            (1, 1 - joueur2)))), 'verticaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
@@ -196,16 +192,14 @@ class Quoridor:
                 # Mur h devant le joueur si deplacement vers  l'objectif
                 if deplacement[1] == pos2[1] + 1:
                     try:
-                        self.placer_mur(joueur, tuple(map
-                                                      (sum, zip(
-                                                          pos2, (0, joueur - 1)))), 'horizontaux')
+                        self.placer_mur(joueur, tuple(map(sum, zip(pos2,
+                        (0, joueur - 1)))), 'horizontaux')
                         return
                     # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
                     except QuoridorError:
                         try:
-                            self.placer_mur(joueur, tuple(map
-                                                    (sum, zip(
-                                                        pos2, (-1, joueur - 1)))), 'horizontaux')
+                            self.placer_mur(joueur, tuple(map(sum, zip(
+                                pos2, (-1, joueur - 1)))), 'horizontaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
@@ -220,7 +214,7 @@ class Quoridor:
         if self.partie_terminée():
             raise QuoridorError('La partie est déjà terminée.')
         # Crée un graphe  de l'état
-        graphe = (self.construire_graphe([joueur['pos'] for joueur in self.jeu['joueurs']],
+        graphe = (construire_graphe([joueur['pos'] for joueur in self.jeu['joueurs']],
                                          self.jeu['murs']['horizontaux'], self.jeu['murs']['verticaux']))
         # Compare le joueur plus proche de la ligne d'arrivé
         joueur2 = 1
@@ -288,53 +282,54 @@ class Quoridor:
         joueur['murs'] -= 1
         self.jeu['murs'][orientation].append(position)
         # Vérifie que le mur placé ne bloque pas les joueurs
-        graphe = self.construire_graphe([joueur['pos'] for joueur in self.jeu['joueurs']],
+        graphe = construire_graphe([joueur['pos'] for joueur in self.jeu['joueurs']],
                                         self.jeu['murs']['horizontaux'], self.jeu['murs']['verticaux'])
         for i, joueur in enumerate(self.jeu['joueurs']):
             if nx.has_path(graphe, tuple(joueur['pos']), f'B{i+1}') == False:
                 self.jeu['murs'][orientation].pop()
                 raise QuoridorError('La position du mur est invalide')
-    def construire_graphe(self, joueurs, murs_horizontaux, murs_verticaux):
-        """Crée le graphe des déplacements admissibles pour les joueurs."""
-        graphe = nx.DiGraph()
-        # pour chaque colonne du damier
-        for x in range(1, 10):
-            # pour chaque ligne du damier
-            for y in range(1, 10):
-                # ajouter les arcs de tous les déplacements possibles pour cette tuile
-                ajout_arcs(graphe, x, y)
-        # retirer tous les arcs qui croisent les murs horizontaux
-        for x, y in murs_horizontaux:
-            graphe.remove_edge((x, y-1), (x, y))
-            graphe.remove_edge((x, y), (x, y-1))
-            graphe.remove_edge((x+1, y-1), (x+1, y))
-            graphe.remove_edge((x+1, y), (x+1, y-1))
-        # retirer tous les arcs qui croisent les murs verticaux
-        for x, y in murs_verticaux:
-            graphe.remove_edge((x-1, y), (x, y))
-            graphe.remove_edge((x, y), (x-1, y))
-            graphe.remove_edge((x-1, y+1), (x, y+1))
-            graphe.remove_edge((x, y+1), (x-1, y+1))
-        # retirer tous les arcs qui pointent vers les positions des joueurs
-        # et ajouter les sauts en ligne droite ou en diagonale, selon le cas
-        for joueur in map(tuple, joueurs):
-            for prédécesseur in list(graphe.predecessors(joueur)):
-                graphe.remove_edge(prédécesseur, joueur)
-                # si admissible, ajouter un lien sauteur
-                successeur = (2*joueur[0]-prédécesseur[0], 2*joueur[1]-prédécesseur[1])
-                if successeur in graphe.successors(joueur) and successeur not in joueurs:
-                    # ajouter un saut en ligne droite
-                    graphe.add_edge(prédécesseur, successeur)
-                else:
-                    # ajouter les liens en diagonal
-                    for successeur in list(graphe.successors(joueur)):
-                        if prédécesseur != successeur and successeur not in joueurs:
-                            graphe.add_edge(prédécesseur, successeur)
-        # ajouter les noeuds objectifs des deux joueurs
-        for x in range(1, 10):
-            graphe.add_edge((x, 9), 'B1')
-            graphe.add_edge((x, 1), 'B2')
-        return graphe
+    
+def construire_graphe(joueurs, murs_horizontaux, murs_verticaux):
+    """Crée le graphe des déplacements admissibles pour les joueurs."""
+    graphe = nx.DiGraph()
+    # pour chaque colonne du damier
+    for x in range(1, 10):
+        # pour chaque ligne du damier
+        for y in range(1, 10):
+            # ajouter les arcs de tous les déplacements possibles pour cette tuile
+            ajout_arcs(graphe, x, y)
+    # retirer tous les arcs qui croisent les murs horizontaux
+    for x, y in murs_horizontaux:
+        graphe.remove_edge((x, y-1), (x, y))
+        graphe.remove_edge((x, y), (x, y-1))
+        graphe.remove_edge((x+1, y-1), (x+1, y))
+        graphe.remove_edge((x+1, y), (x+1, y-1))
+    # retirer tous les arcs qui croisent les murs verticaux
+    for x, y in murs_verticaux:
+        graphe.remove_edge((x-1, y), (x, y))
+        graphe.remove_edge((x, y), (x-1, y))
+        graphe.remove_edge((x-1, y+1), (x, y+1))
+        graphe.remove_edge((x, y+1), (x-1, y+1))
+    # retirer tous les arcs qui pointent vers les positions des joueurs
+    # et ajouter les sauts en ligne droite ou en diagonale, selon le cas
+    for joueur in map(tuple, joueurs):
+        for prédécesseur in list(graphe.predecessors(joueur)):
+            graphe.remove_edge(prédécesseur, joueur)
+            # si admissible, ajouter un lien sauteur
+            successeur = (2*joueur[0]-prédécesseur[0], 2*joueur[1]-prédécesseur[1])
+            if successeur in graphe.successors(joueur) and successeur not in joueurs:
+                # ajouter un saut en ligne droite
+                graphe.add_edge(prédécesseur, successeur)
+            else:
+                # ajouter les liens en diagonal
+                for successeur in list(graphe.successors(joueur)):
+                    if prédécesseur != successeur and successeur not in joueurs:
+                        graphe.add_edge(prédécesseur, successeur)
+    # ajouter les noeuds objectifs des deux joueurs
+    for x in range(1, 10):
+        graphe.add_edge((x, 9), 'B1')
+        graphe.add_edge((x, 1), 'B2')
+    return graphe
 
 def ajout_arcs(graphe, x, y):
     """Ajoute les arcs de tous les déplacements possibles pour une tuile"""
