@@ -230,14 +230,17 @@ class Quoridor:
         joueur2 = 1
         if joueur == 1:
             joueur2 = 2
-        #positions des joueurs
+        # positions des joueurs
         pos1 = tuple(self.jeu['joueurs'][joueur - 1]['pos'])
         pos2 = tuple(self.jeu['joueurs'][joueur2 - 1]['pos'])
         # Si plus proche -> shortest path
         if (len(nx.shortest_path(graphe, pos1, f'B{joueur}'))
                 <= len(nx.shortest_path(graphe, pos2, f'B{joueur2}'))):
-            self.déplacer_jeton(joueur, nx.shortest_path(graphe, pos1, f'B{joueur}')[1])
-            return
+            try:
+                self.déplacer_jeton(joueur, nx.shortest_path(graphe, pos1, f'B{joueur}')[1])
+                return
+            except QuoridorError:
+                raise QuoridorError('La partie est déjà terminée')
         # Si plus loin
         self.final_jouer_coup(joueur, joueur2, graphe, pos1, pos2)
     def partie_terminée(self):
@@ -353,8 +356,11 @@ def ajout_arcs(graphe, x, y):
         graphe.add_edge((x, y), (x, y+1))
 ###Programme###
 TEST = Quoridor(({"nom": "idul", "murs": 9, "pos": [4, 4]},
-                 {"nom": "automate", "murs": 9, "pos": [5, 9]}), {
-                     "horizontaux": [(0, 6)],
-                     "verticaux": [(5,5)]
+                 {"nom": "automate", "murs": 9, "pos": [5, 1]}), {
+                     "horizontaux": [(2, 6)],
+                     "verticaux": [(4,7)]
                  })
 print(TEST)
+TEST.jouer_coup(2)
+print(TEST.état_partie())
+
