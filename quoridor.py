@@ -208,7 +208,7 @@ class Quoridor:
                             self.placer_mur(joueur, tuple(map(sum,
                                                               zip(pos2,
                                                                   (-1, joueur - 1)))),
-                                        'horizontaux')
+                                            'horizontaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
