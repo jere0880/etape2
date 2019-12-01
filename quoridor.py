@@ -163,14 +163,14 @@ class Quoridor:
                     try:
                         self.placer_mur(joueur, tuple(map(sum,
                                                           zip(pos2,
-                                                            (0, -1 * (2 - joueur2))))), 'verticaux')
+                                                              (0, -1 * (2 - joueur2))))), 'verticaux')
                         return
                     # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
                     except QuoridorError:
                         try:
                             self.placer_mur(joueur, tuple(map(sum,
                                                               zip(pos2,
-                                                              (0, 1 - joueur2)))), 'verticaux')
+                                                                  (0, 1 - joueur2)))), 'verticaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
@@ -180,13 +180,14 @@ class Quoridor:
                     try:
                         self.placer_mur(joueur, tuple(map(sum,
                                                         zip(pos2,
-                                                               (1, -1 *(2 - joueur2))))), 'verticaux')
+                                                                 (1, -1 *(2 - joueur2))))),
+                                                                     'verticaux')
                         return
                     except QuoridorError:
                         try:
                             self.placer_mur(joueur, tuple(map(sum,
                                                               zip(pos2,
-                                                                 (1, 1 - joueur2)))), 'verticaux')
+                                                                  (1, 1 - joueur2)))), 'verticaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
@@ -198,14 +199,15 @@ class Quoridor:
                     try:
                         self.placer_mur(joueur, tuple(map(sum,
                                                           zip(pos2,
-                                                            (0, joueur - 1)))), 'horizontaux')
+                                                              (0, joueur - 1)))), 'horizontaux')
                         return
                     # Si on ne peut pas placer de mur à cet  endroit, on deplace notre pion
                     except QuoridorError:
                         try:
                             self.placer_mur(joueur, tuple(map(sum,
                                                               zip(pos2,
-                                                                  (-1, joueur - 1)))), 'horizontaux')
+                                                                  (-1, joueur - 1)))),
+                                                                    'horizontaux')
                             return
                         except QuoridorError:
                             pos2 = deplacement
@@ -348,3 +350,9 @@ def ajout_arcs(graphe, x, y):
         graphe.add_edge((x, y), (x, y-1))
     if y < 9:
         graphe.add_edge((x, y), (x, y+1))
+###Programme###
+TEST = Quoridor(({"nom": "idul", "murs": 10, "pos": [5, 1]},
+                 {"nom": "automate", "murs": 10, "pos": [5, 9]}), {
+                     "horizontaux": [],
+                     "verticaux": []
+                 })
