@@ -22,20 +22,11 @@ class Quoridor:
         #Création des dictionnaires joueur
         joueur = []
         jeu = {}
-        for index5, jou in enumerate(joueurs):
-            if isinstance(jou, str) and index5 == 0:
-                joueur.append({'nom': jou, 'murs': 10, 'pos': (5, 1)})
-            if isinstance(jou, str) and index5 == 1:
-                joueur.append({'nom': jou, 'murs': 10, 'pos': (5, 9)})
-            if isinstance(jou, dict):
-                joueur.append(jou)
-                if jou['pos'][1] == 9 and index5 == 0:
-                    jeu["gagnant"] = jou["nom"]
-                if jou['pos'][1] == 1 and index5 == 1:
-                    jeu["gagnant"] = jou["nom"]
+        self.création_dictionnaire_jeu(joueurs, joueur, jeu)
         #Création de l'état de jeu et des dictionnaires murs
         if murs is None:
-            jeu['joueurs'], jeu['murs'] = [joueur[0], joueur[1]], {'horizontaux':[], 'verticaux': []}
+            jeu['joueurs'] = [joueur[0], joueur[1]]
+            jeu['murs'] = {'horizontaux':[], 'verticaux': []}
             murs = {'horizontaux':[], 'verticaux': []}
         else:
             jeu['joueurs'], jeu['murs'] = [joueur[0], joueur[1]], murs
@@ -59,6 +50,18 @@ class Quoridor:
             raise QuoridorError('Position invalide pour un joueur')
         self.jeu = jeu
         self.nom = [self.jeu['joueurs'][0]['nom'], self.jeu['joueurs'][1]['nom']]
+    def création_dictionnaire_jeu(self, joueurs, joueur, jeu):
+        for index5, jou in enumerate(joueurs):
+            if isinstance(jou, str) and index5 == 0:
+                joueur.append({'nom': jou, 'murs': 10, 'pos': (5, 1)})
+            if isinstance(jou, str) and index5 == 1:
+                joueur.append({'nom': jou, 'murs': 10, 'pos': (5, 9)})
+            if isinstance(jou, dict):
+                joueur.append(jou)
+                if jou['pos'][1] == 9 and index5 == 0:
+                    jeu["gagnant"] = jou["nom"]
+                if jou['pos'][1] == 1 and index5 == 1:
+                    jeu["gagnant"] = jou["nom"]
     def __str__(self):
         """Méthode qui retourn l'état de jeu sous forme de damier ascii"""
         table = []
