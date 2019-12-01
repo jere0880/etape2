@@ -297,7 +297,7 @@ class Quoridor:
                 self.jeu['murs'][orientation].pop()
                 raise QuoridorError('La position du mur est invalide')
 def création_dictionnaire_joueur(joueurs, joueur, jeu):
-    """Création des joueurs pour le dictionnaire de jeu et vérification 
+    """Création des joueurs pour le dictionnaire de jeu et vérification
     du gagnant."""
     for index5, jou in enumerate(joueurs):
         if isinstance(jou, str) and index5 == 0:
@@ -362,3 +362,10 @@ def ajout_arcs(graphe, x, y):
         graphe.add_edge((x, y), (x, y-1))
     if y < 9:
         graphe.add_edge((x, y), (x, y+1))
+TEST1 = Quoridor([
+                {'nom': 'nom1', 'murs': 10, 'pos': (5, 1)},
+                {'nom': 'nom2', 'murs': 10, 'pos': (5, 9)},
+            ], {
+                'horizontaux': [],
+                'verticaux': [],
+            })
