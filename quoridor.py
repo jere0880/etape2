@@ -362,10 +362,3 @@ def ajout_arcs(graphe, x, y):
         graphe.add_edge((x, y), (x, y-1))
     if y < 9:
         graphe.add_edge((x, y), (x, y+1))
-TEST1 = Quoridor([
-                {'nom': 'nom1', 'murs': 10, 'pos': (5, 1)},
-                {'nom': 'nom2', 'murs': 10, 'pos': (5, 9)},
-            ], {
-                'horizontaux': [],
-                'verticaux': [],
-            })
