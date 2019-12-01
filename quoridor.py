@@ -54,33 +54,6 @@ class Quoridor:
             raise QuoridorError('Position invalide pour un joueur')
         self.jeu = jeu
         self.nom = [self.jeu['joueurs'][0]['nom'], self.jeu['joueurs'][1]['nom']]
-    def verifier_murs(self):
-        """Méthode qui vérifie que la position des murs est valide"""
-        mur = self.murs
-        for index3, mh in enumerate(mur['horizontaux']):
-            muh = mur['horizontaux'].copy()
-            del muh[index3]
-            for mhp in muh:
-                if ((mh[1] == mhp[1] and (mh[0] == mhp[0]
-                                          or mh[0] == mhp[0] + 1))
-                                        or mh[0] not in range(1, 9)
-                                        or mh[1] not in range(2, 10)):
-                    raise QuoridorError('Position de murs invalide')
-            for murv in mur['verticaux']:
-                if mh[0] == murv[0] - 1 and mh[1] == murv[1] + 1:
-                    raise QuoridorError('un mur occupe déjà cette position')
-        for index4, mv in enumerate(mur['verticaux']):
-            muv = mur['verticaux'].copy()
-            del muv[index4]
-            for mvp in muv:
-                if ((mv[0] == mvp[0] and (mv[1] == mvp[1]
-                                          or mv[1] == mvp[1] + 1))
-                        or mv[0] not in range(2, 10)
-                        or mv[1] not in range(1, 9)):
-                    raise QuoridorError('Position de murs invalide')
-            for murh in mur['horizontaux']:
-                if murh[0] == mv[0] + 1 and murh[1] == mv[1] - 1:
-                    raise QuoridorError('un mur occupe déjà cette position')
     def __str__(self):
         """Méthode qui retourn l'état de jeu sous forme de damier ascii"""
         table = []
@@ -130,6 +103,31 @@ class Quoridor:
         damier += '\n' + '--|-----------------------------------'
         damier += '\n' + '  | 1   2   3   4   5   6   7   8   9'
         return damier
+    def verifier_murs(self):
+        """Méthode qui vérifie que la position des murs est valide"""
+        mur = self.murs
+        for index3, mh in enumerate(mur['horizontaux']):
+            if mh[0] not in range(1, 9) or mh[1] not in range(2, 10):
+                raise QuoridorError('Position de murs invalide')
+            muh = mur['horizontaux'].copy()
+            del muh[index3]
+            for mhp in muh:
+                if (mh[1] == mhp[1] and (mh[0] == mhp[0] or mh[0] == mhp[0] + 1)):
+                    raise QuoridorError('Position de murs invalide')
+            for murv in mur['verticaux']:
+                if mh[0] == murv[0] - 1 and mh[1] == murv[1] + 1:
+                    raise QuoridorError('un mur occupe déjà cette position')
+        for index4, mv in enumerate(mur['verticaux']):
+            if mv[0] not in range(2, 10) or mv[1] not in range(1, 9):
+                raise QuoridorError('Position de murs invalide')
+            muv = mur['verticaux'].copy()
+            del muv[index4]
+            for mvp in muv:
+                if (mv[0] == mvp[0] and (mv[1] == mvp[1] or mv[1] == mvp[1] + 1)):
+                    raise QuoridorError('Position de murs invalide')
+            for murh in mur['horizontaux']:
+                if murh[0] == mv[0] + 1 and murh[1] == mv[1] - 1:
+                    raise QuoridorError('un mur occupe déjà cette position')
     def déplacer_jeton(self, joueur, position):
         """Méthode qui déplace le jeton"""
         # Le numero du joueur est autre que 1 ou 2.
@@ -352,8 +350,9 @@ def ajout_arcs(graphe, x, y):
     if y < 9:
         graphe.add_edge((x, y), (x, y+1))
 ###Programme###
-TEST = Quoridor(({"nom": "idul", "murs": 9, "pos": [5, 1]},
+TEST = Quoridor(({"nom": "idul", "murs": 9, "pos": [4, 4]},
                  {"nom": "automate", "murs": 9, "pos": [5, 9]}), {
-                     "horizontaux": [(5,6)],
-                     "verticaux": [(4,7)]
+                     "horizontaux": [(0, 6)],
+                     "verticaux": [(5,5)]
                  })
+print(TEST)
